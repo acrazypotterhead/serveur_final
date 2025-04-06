@@ -1,0 +1,198 @@
+WindowManager:
+    FirstWindow:
+    SecondWindow:
+        
+<RoundedToggleButton@ToggleButton>:
+    background_color: 0, 0, 0, 0  # Cache l'arrière-plan par défaut
+    color: 1, 1, 1, 1  # Couleur du texte
+    size: self.size
+
+    canvas.before:
+        Color:
+            rgba: 79/255, 79/255, 79/255, 1  
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]  # Coins arrondis
+
+<RoundedButton@Button>:
+    background_color: 0, 0, 0, 0  # Cache l'arrière-plan par défaut
+    color: 1, 1, 1, 1  # Couleur du texte
+    size: self.size
+
+    canvas.before:
+        Color:
+            rgba: 79/255, 79/255, 79/255, 1  
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]  # Coins arrondis
+
+    
+
+<FirstWindow>:
+    name: 'first'
+    figure_wgt:figure_wgt
+    GridLayout:
+        cols: 1
+        spacing: 10
+        padding: 10
+        Label:
+            id: fps_label
+            text: "FPS: 0"
+            font_size: 16
+            size_hint: None, None
+            size: 100, 30
+            pos_hint: {"right": 1, "top": 1}
+            
+
+        Label:
+            id: status_label
+            text: "Server is stopped, click 'Start server' to start it"
+            size_hint_y: 0.1
+            #height: 30
+
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            size_hint_y: 0.15
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+
+                RoundedButton:
+                
+                    
+                    id: status_server_button
+                    text: " Start server"
+                    on_press: root.start_server()
+                    #size_hint_y: None
+                    #height: 50
+                    
+
+                RoundedButton:
+                    id: pause_resume_button
+                    text: "Pause Reception"
+                    on_press: root.toggle_pause_resume()
+                    #size_hint_y: None
+                    #height: 50
+
+            RoundedButton:
+                text: "Start graph"
+                on_press: root.reset_graph()
+                #size_hint_y: None
+                #height: 50
+
+            RoundedButton:
+                text: "Sauvegarder Graph"
+                on_release: root.save_graph_and_data()
+        
+
+            TextInput:
+                id: file_name_input
+                text: ""
+              
+
+
+            
+            
+        BoxLayout:
+            orientation:'vertical'
+            size_hint_y: 0.15
+            BoxLayout:
+                spacing: 5
+                #size_hint_y:None
+                RoundedButton:
+                    text:"home"
+                    on_press: root.start_graph()
+                    on_release:root.home()
+                    #height: 50
+                RoundedToggleButton:
+                    group:'touch_mode'
+                    state:'down'
+                    text:"pan" 
+                    #height: 50
+                    on_press:
+                        root.set_touch_mode('pan')
+                        self.state='down'
+                RoundedToggleButton:
+                    group:'touch_mode'
+                    text:"zoom box"  
+                    #height: 50
+                    on_press:
+                        root.set_touch_mode('zoombox')
+                        self.state='down'  
+                   
+        MatplotFigure:
+            id:figure_wgt
+            fast_draw:False
+        
+
+                
+        
+        
+        Button:
+            text: "Go to Second Window"
+            size_hint_y: 0.05
+            #height: 50
+            on_press:
+                root.manager.current = 'second'
+                root.manager.transition.direction = 'left'
+                
+
+<SecondWindow>:
+    name: 'second'
+    GridLayout:
+        cols: 1
+        Label: 
+            text: "Second Window"
+            size_hint_y: 0.05
+        
+        GridLayout:
+            size: root.size
+            pos: root.pos                                                                                                                                                                                                                                       
+            cols: 2
+            rows: 1
+            row_default_height: 450  # Hauteur par défaut des lignes
+            col_default_width: 450  # Largeur par défaut des colonnes
+            row_force_default: True  # Forcer la hauteur par défaut des lignes
+            col_force_default: True  # Forcer la largeur par défaut des colonnes
+            Jauge:
+                id: Jauge1
+                size_hint: 1,1
+                choice: "x"
+                min_value: -30
+                max_value: 30
+            
+            Jauge:
+                id: Jauge2
+                size_hint: 1,1
+                choice: "y"
+                min_value: -30
+                max_value: 30
+        GridLayout:
+            size: root.size
+            pos: root.pos
+            cols: 1
+            rows: 1
+            row_default_height: 500  # Hauteur par défaut des lignes
+            col_default_width: 500  # Largeur par défaut des colonnes
+            row_force_default: True  # Forcer la hauteur par défaut des lignes
+            col_force_default: True
+            Jauge:
+                id: Jauge3
+                size_hint: 1,1
+                choice: "z"
+                min_value: -30
+                max_value: 30
+
+
+
+        Button:
+            text: "Go to First Window"
+            size_hint_y: 0.05
+            on_press: 
+                root.manager.current = 'first'
+                root.manager.transition.direction = 'right'
